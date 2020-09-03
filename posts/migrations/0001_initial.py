@@ -15,35 +15,94 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=120)),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('link', models.URLField()),
-                ('upvotes', models.IntegerField(default=0)),
-                ('author_name', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='posts', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=120)),
+                ("creation_date", models.DateTimeField(auto_now_add=True)),
+                ("link", models.URLField()),
+                ("upvotes", models.IntegerField(default=0)),
+                (
+                    "author_name",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="posts",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('content', models.TextField(max_length=400, null=True)),
-                ('author_name', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='comments', to=settings.AUTH_USER_MODEL)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='posts.post')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("creation_date", models.DateTimeField(auto_now_add=True)),
+                ("content", models.TextField(max_length=400, null=True)),
+                (
+                    "author_name",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="comments",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="comments",
+                        to="posts.post",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Upvote',
+            name="Upvote",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='posts.post')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='upvotes', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="posts.post"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="upvotes",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('post', 'user')},
+                "unique_together": {("post", "user")},
             },
         ),
     ]
