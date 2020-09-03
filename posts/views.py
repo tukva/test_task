@@ -1,6 +1,6 @@
 from rest_framework import viewsets, views, status
 from rest_framework.response import Response
-from .models import Post, Comment, Upvote
+from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer, UpvoteSerializer
 
 
