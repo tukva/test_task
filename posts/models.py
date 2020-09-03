@@ -14,15 +14,28 @@ class Post(models.Model):
     link = models.URLField()
     upvotes = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.title}'
+
 
 class Comment(models.Model):
-    creation_date = models.DateTimeField(auto_now_add=True)
     author_name = models.ForeignKey(
         User,
         related_name='comments',
         on_delete=models.SET_NULL,
         null=True,
     )
+    creation_date = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
-    parent = models.ForeignKey('Comment', related_name='replies', on_delete=models.CASCADE, null=True, default=None)
-    content = models.TextField(null=True)
+    content = models.TextField(max_length=400, null=True)
+
+    def __str__(self):
+        return f'{self.content}'
+
+
+class Upvote(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='upvotes', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('post', 'user')
