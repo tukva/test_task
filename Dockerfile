@@ -24,3 +24,6 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . .
+
+# run gunicorn
+CMD gunicorn test_task.wsgi:application --bind 0.0.0.0:$PORT

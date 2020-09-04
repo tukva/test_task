@@ -11,8 +11,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import environ
+import dj_database_url
 
 from pathlib import Path
+
+
+env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY", "foo")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS",
+                         default=["localhost", "0.0.0.0", "127.0.0.1"])
 
 
 # Application definition
@@ -79,15 +85,18 @@ WSGI_APPLICATION = "test_task.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
+        "ENGINE": env.str("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": env.str("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": env.str("SQL_USER", "user"),
+        "PASSWORD": env.str("SQL_PASSWORD", "password"),
+        "HOST": env.str("SQL_HOST", "localhost"),
+        "PORT": env.str("SQL_PORT", "5432"),
     }
 }
 
+DATABASE_URL = os.environ.get('DATABASE_URL')
+db_from_env = dj_database_url.config(default=DATABASE_URL, conn_max_age=500, ssl_require=True)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
